@@ -70,5 +70,5 @@ class FileStorageBackend:
     def __make_error_response(self, message: str):
         result = {"errmsg": message}
         response = jsonify(result)
-        response.status_code = 404
+        response.status_code = 400
         return response
