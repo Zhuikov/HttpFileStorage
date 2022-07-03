@@ -10,7 +10,7 @@ paths:
     post:
       tags:
         - Auth
-      summary: Auth user with login and password
+      summary: Auth user with login
       requestBody:
         content:
             application/json:
@@ -21,6 +21,8 @@ paths:
           description: Successful operation
   /api/file:
     post:
+      security:
+        - basicAuth: []
       tags:
         - Storage operations
       summary: Upload file and returns it's hash
@@ -67,6 +69,8 @@ paths:
         '404':
           description: File not found
     delete:
+      security:
+        - basicAuth: []
       tags:
         - Storage operations
       summary: Delete file by hash
@@ -90,6 +94,10 @@ paths:
         '404':
           description: File not found
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   schemas:
     UserAuthData:
       type: object
@@ -97,9 +105,6 @@ components:
         login:
           type: string
           example: username
-        password:
-          type: string
-          example: secretPass
     FileInfo:
       type: object
       properties:
