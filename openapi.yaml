@@ -1,0 +1,114 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: File storage API
+tags:
+  - name: Auth
+  - name: Storage operations
+paths:
+  /api/login:
+    post:
+      tags:
+        - Auth
+      summary: Auth user with login and password
+      requestBody:
+        content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAuthData'
+      responses:
+        '200':
+          description: Successful operation
+  /api/file:
+    post:
+      tags:
+        - Storage operations
+      summary: Upload file and returns it's hash
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileInfo'
+        '400':
+          description: Client Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+  /api/file/{file_hash}:
+    get:
+      tags:
+        - Storage operations
+      summary: Download file by hash
+      parameters:
+        - in: path
+          name: file_hash
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: File content
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: File not found
+    delete:
+      tags:
+        - Storage operations
+      summary: Delete file by hash
+      parameters:
+        - in: path
+          name: file_hash
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Client Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized
+        '404':
+          description: File not found
+components:
+  schemas:
+    UserAuthData:
+      type: object
+      properties:
+        login:
+          type: string
+          example: username
+        password:
+          type: string
+          example: secretPass
+    FileInfo:
+      type: object
+      properties:
+        fileHash:
+          type: string
+          example: b1b34d0172bf4add07d772b58074bd1296b1565cbe9119eaad81a90cef47db24
+    Error:
+      type: object
+      properties:
+        errmsg:
+          type: string
+          example: some error description
